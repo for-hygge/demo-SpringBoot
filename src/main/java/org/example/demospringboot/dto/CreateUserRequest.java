@@ -2,10 +2,12 @@ package org.example.demospringboot.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
 @Data
+@ToString
 public class CreateUserRequest {
     @NotBlank(message = "name cannot be blank")
     @Size(max = 20, message = "name cannot be longer than 20 characters")
@@ -19,7 +21,7 @@ public class CreateUserRequest {
     @Max(value = 120, message = "age must be <= 120")
     private Integer age;
 
-    @NotBlank(message = "salary cannot be empty")
+    @NotNull(message = "salary cannot be null")
     @PositiveOrZero(message = "salary must be >= 0")
     private BigDecimal salary;
 }

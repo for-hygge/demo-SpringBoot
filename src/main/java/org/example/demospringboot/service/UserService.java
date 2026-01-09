@@ -1,5 +1,6 @@
 package org.example.demospringboot.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.demospringboot.dto.CreateUserRequest;
 import org.example.demospringboot.dto.UpdateUserRequest;
 import org.example.demospringboot.exception.CustomBadRequestException;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
 
@@ -60,6 +62,7 @@ public class UserService {
         user.setAge(createUserRequest.getAge());
         user.setSalary(createUserRequest.getSalary());
         try {
+            log.info("Created one user with email: {}", user.getEmail());
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new CustomBadRequestException("This email already exists: " + createUserRequest.getEmail());
