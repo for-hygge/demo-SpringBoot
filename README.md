@@ -3,7 +3,7 @@ This project is a demo for SpringBoot application.
 
 ## Endpoints
 ### localhost:8080
-- retrieve all users ```GET /users```
+- retrieve all users ```GET /users?sort=id,asc (by default)```
 - retrieve a user by its id ```GET /users/{id}```
 - create a user ```POST /users```
 - update a specific user's info ```PUT /users/{id}```
