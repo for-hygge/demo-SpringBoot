@@ -2,14 +2,15 @@
 This project is a demo for SpringBoot application.
 
 ## Endpoints
-localhost:8080
+### localhost:8080
 - retrieve all users ```GET /users```
 - retrieve a user by its id ```GET /users/{id}```
 - create a user ```POST /users```
 - update a specific user's info ```PUT /users/{id}```
 - delete a user ```DELETE /users/{id}```
 
-health checks ```http://localhost:8090/manage/health```
+### Actuator
+health checks ```http://localhost:8090/manage/health``` \
 info ```http://localhost:8090/manage/info```
 
 ## Setup
