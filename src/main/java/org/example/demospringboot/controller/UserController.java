@@ -7,6 +7,7 @@ import org.example.demospringboot.entity.User;
 import org.example.demospringboot.exception.ApiError;
 import org.example.demospringboot.exception.UserNotFound;
 import org.example.demospringboot.service.UserService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,7 +22,7 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(@Qualifier("userService") UserService userService) {
         this.userService = userService;
     }
 
