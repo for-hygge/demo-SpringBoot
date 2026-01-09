@@ -10,6 +10,7 @@ public class UpdateUserRequest {
     @Size(max = 20, message = "name cannot be longer than 20 characters")
     private String name;
 
+    @NotNull(message = "email cannot be null")
     @Email(message = "wrong email format")
     private String email;
 

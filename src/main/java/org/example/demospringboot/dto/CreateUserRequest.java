@@ -11,7 +11,7 @@ public class CreateUserRequest {
     @Size(max = 20, message = "name cannot be longer than 20 characters")
     private String name;
 
-    @NotBlank(message = "email cannot be blank")
+    @NotNull(message = "email cannot be null")
     @Email(message = "wrong email format")
     private String email;
 
@@ -19,7 +19,7 @@ public class CreateUserRequest {
     @Max(value = 120, message = "age must be <= 120")
     private Integer age;
 
-    @NotNull(message = "salary cannot be null")
+    @NotBlank(message = "salary cannot be empty")
     @PositiveOrZero(message = "salary must be >= 0")
     private BigDecimal salary;
 }

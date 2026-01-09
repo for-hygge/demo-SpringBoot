@@ -4,6 +4,7 @@ import org.example.demospringboot.dto.CreateUserRequest;
 import org.example.demospringboot.dto.UpdateUserRequest;
 import org.example.demospringboot.exception.CustomBadRequestException;
 import org.example.demospringboot.exception.UserNotFound;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,16 +54,16 @@ public class UserService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public User createUser(CreateUserRequest createUserRequest) {
-        if (userRepository.existsByEmail(createUserRequest.getEmail())) {
-            throw new CustomBadRequestException("This email already exists: " + createUserRequest.getEmail());
-        }
-
         User user = new User();
         user.setName(createUserRequest.getName());
         user.setEmail(createUserRequest.getEmail());
         user.setAge(createUserRequest.getAge());
         user.setSalary(createUserRequest.getSalary());
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new CustomBadRequestException("This email already exists: " + createUserRequest.getEmail());
+        }
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
@@ -70,15 +71,14 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
 
         if (updateUserRequest.getName() != null) user.setName(updateUserRequest.getName());
-        if (updateUserRequest.getEmail() != null) {
-            if (userRepository.existsByEmailAndIdNot(updateUserRequest.getEmail(), id)) {
-                throw new CustomBadRequestException("This email already exists: " + updateUserRequest.getEmail());
-            }
-            user.setEmail(updateUserRequest.getEmail());
-        }
+        if (updateUserRequest.getEmail() != null) user.setEmail(updateUserRequest.getEmail());
         if (updateUserRequest.getAge() != null) user.setAge(updateUserRequest.getAge());
         if (updateUserRequest.getSalary() != null) user.setSalary(updateUserRequest.getSalary());
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new CustomBadRequestException("This email already exists: " + updateUserRequest.getEmail());
+        }
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
