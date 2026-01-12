@@ -18,11 +18,15 @@ info ```http://localhost:8090/manage/info```
 - maven
 
 ## Test
-Postman test results
+- Create a user
 ![create.png](src/main/resources/static/create.png)
+- retrieve a user
+![getUser.png](src/main/resources/static/getUser.png)
+- update a user
+![updateUser.png](src/main/resources/static/updateUser.png)
+- retrieve all users
 ![getAll.png](src/main/resources/static/getAll.png)
-![getById.png](src/main/resources/static/getById.png)
-![update.png](src/main/resources/static/update.png)
+- delete a user
 ![delete.png](src/main/resources/static/delete.png)
 
 ## Dependencies

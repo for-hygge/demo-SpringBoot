@@ -19,9 +19,7 @@ import org.example.demospringboot.repository.UserRepository;
 import org.example.demospringboot.utils.Helper;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -37,30 +35,15 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = "usersList", key = "#sort == null || #sort.isBlank() ? 'id,asc' : #sort")
     public List<User> getAllUsers(String sort) {
-        List<User> users = userRepository.findAll();
-        if (sort == null || sort.isBlank()) {
-            return users;
-        }
-        String[] parts = sort.split(",");
-        String sortBy = parts[0];
-        String order = parts.length > 1 ? parts[1] : "asc";
-
-        Comparator<User> comparator = helper.buildUserComparator(sortBy);
-        if ("desc".equalsIgnoreCase(order)) {
-                comparator = comparator.reversed();
-        }
-
-        users.sort(comparator);
-        return users;
+        return userRepository.findAll(helper.buildSort(sort));
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = "users", key = "#id", unless = "#result.isEmpty()")
-    public Optional<User> getUserById(Long id) {
+    @Cacheable(cacheNames = "users", key = "#id", unless = "#result == null")
+    public User getUserById(Long id) {
         log.info("DB hit: getUserById({})", id);
-        return userRepository.findById(id);
+        return userRepository.findById(id).orElse(null);
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
@@ -102,10 +85,8 @@ public class UserService {
     @Transactional(propagation = Propagation.REQUIRED)
     @CacheEvict(cacheNames = "users", key = "#id")
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFound(id);
-        }
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
+        userRepository.delete(user);
         publisher.publishEvent(new UserChangedEvent(UserChangedEvent.Type.DELETED, id, null));
     }
 }

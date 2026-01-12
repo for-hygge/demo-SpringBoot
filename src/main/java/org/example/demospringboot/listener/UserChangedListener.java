@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.demospringboot.event.UserChangedEvent;
 import org.example.demospringboot.service.AuditService;
 import org.example.demospringboot.service.MailService;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -17,12 +15,10 @@ public class UserChangedListener {
 
     private final MailService mailService;
     private final AuditService auditService;
-    private final CacheManager cacheManager;
 
-    public UserChangedListener(MailService mailService, AuditService auditService, CacheManager cacheManager) {
+    public UserChangedListener(MailService mailService, AuditService auditService) {
         this.mailService = mailService;
         this.auditService = auditService;
-        this.cacheManager = cacheManager;
     }
 
     @Async("demoTaskExecutor")
@@ -35,11 +31,6 @@ public class UserChangedListener {
         if (e.type() == UserChangedEvent.Type.CREATED && e.email() != null) {
             mailService.sendWelcomeEmail(e.email());
         }
-
-        Cache usersList = cacheManager.getCache("usersList");
-        if (usersList != null) {
-            usersList.clear();
-            log.info("Cleared cache: usersList");
-        }
     }
 }
+
